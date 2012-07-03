@@ -24,11 +24,8 @@ public class Kernel extends Thread
     private int timeStamp;
     private int interval = 10;
 
-	private int lastCheck;	
-	private int Tau = 5;
-
 	private int m = 3;
-	private int n = 3;
+	private int n = 2;
 
     public int runs;
     public int runcycles;
@@ -49,9 +46,6 @@ public class Kernel extends Thread
         long address_limit = (block * (MaxPages+1))-1;
 
         timeStamp = 0;
-		
-		lastCheck = 0;
-
 
         if (config != null)
         {
@@ -453,11 +447,10 @@ public class Kernel extends Thread
                                        Long.toString(instruct.addr , addressradix) +
                                        " ... page fault" );
                 }
-	
-				// cargar la pagina que se necesita
+				// cargar la pagina necesitada
                 PageFault.load(page, frameVector, timeStamp, controlPanel);
-				System.out.println("pf");
-				// cargar las m anteriores(si es que no estan en memoria)
+
+				// cargar las 5 instrucciones anteriores
 				for (int i = 1; (i <= m) && (runs - i >= 0); i++) {
 					Instruction aux = (Instruction) instructVector.elementAt(runs - i);
 					int pID = getPageID(aux.addr, MaxPages, block);
@@ -467,8 +460,8 @@ public class Kernel extends Thread
 						System.out.println("cargando");
 					}
 				}
-				
-				// cargar las n posteriores
+
+				// cargar las 5 instrucciones posteriores
 				for (int i = 1; (i <= n) && (runs + i < instructVector.size()); i++) {
 					Instruction aux = (Instruction) instructVector.elementAt(runs + i);
 					int pID = getPageID(aux.addr, MaxPages, block);
@@ -478,7 +471,6 @@ public class Kernel extends Thread
 						System.out.println("cargando");
 					}
 				}
-
             }
 
             long result = page.read(instruct.addr, timeStamp);
@@ -519,9 +511,7 @@ public class Kernel extends Thread
                 }
 
                 PageFault.load(page, frameVector, timeStamp, controlPanel);
-				System.out.println("pf");
-
-				// cargar las m anteriores(si es que no estan en memoria)
+				
 				for (int i = 1; (i <= m) && (runs - i >= 0); i++) {
 					Instruction aux = (Instruction) instructVector.elementAt(runs - i);
 					int pID = getPageID(aux.addr, MaxPages, block);
@@ -531,8 +521,7 @@ public class Kernel extends Thread
 						System.out.println("cargando");
 					}
 				}
-				
-				// cargar las n posteriores
+
 				for (int i = 1; (i <= n) && (runs + i < instructVector.size()); i++) {
 					Instruction aux = (Instruction) instructVector.elementAt(runs + i);
 					int pID = getPageID(aux.addr, MaxPages, block);
@@ -542,8 +531,6 @@ public class Kernel extends Thread
 						System.out.println("cargando");
 					}
 				}
-
-
             }
 
             long result = page.write(instruct.addr, timeStamp);
@@ -564,17 +551,6 @@ public class Kernel extends Thread
 
         controlPanel.timeValueLabel.setText(Integer.toString(timeStamp) +
                                             " (ns)");
-
-		// actualizacion de contadores en tiempo fijo Tau
-		if (interval >= Tau || lastCheck + Tau >= timeStamp) {
-			for (int i = 0; i < frameVector.size(); i++) {
-				MFrame p;
-				p = (MFrame) frameVector.elementAt(i);
-				p.updatePageRefCounter();
-			}
-			lastCheck = timeStamp;
-		}
-
         timeStamp += interval;
 
         //instructVector.remove(instruct);
