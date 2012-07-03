@@ -1,0 +1,35 @@
+READ 4 ... okay
+READ 13 ... okay
+WRITE 1ff ... okay
+READ 200 ... okay
+WRITE 8000 ... okay
+READ 8400 ... page fault
+READ 8400 ... okay
+READ 8800 ... page fault
+READ 8800 ... okay
+WRITE 8c00 ... page fault
+WRITE 8c00 ... okay
+WRITE 9000 ... page fault
+WRITE 9000 ... okay
+WRITE 9400 ... page fault
+WRITE 9400 ... okay
+READ 9800 ... page fault
+READ 9800 ... okay
+READ 9c00 ... page fault
+READ 9c00 ... okay
+WRITE a000 ... page fault
+WRITE a000 ... okay
+READ a400 ... page fault
+READ a400 ... okay
+READ a800 ... page fault
+READ a800 ... okay
+READ ac00 ... page fault
+READ ac00 ... okay
+WRITE b000 ... page fault
+WRITE b000 ... okay
+WRITE b400 ... page fault
+WRITE b400 ... okay
+WRITE b800 ... page fault
+WRITE b800 ... okay
+READ bc00 ... page fault
+READ bc00 ... okay
